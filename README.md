@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🏥 Claude Impact Lab 2026 | Dataset Salute di Rio
+# 🏥 Visitare Case | Dataset Salute di Rio
 
-[![Claude](https://img.shields.io/badge/Claude-Impact%20Lab-5436DA?style=for-the-badge&logo=anthropic&logoColor=white)](https://www.anthropic.com)
+[![Visitare Case](https://img.shields.io/badge/Visitare-Case-5436DA?style=for-the-badge)](https://github.com/vinicius-saraiva/visitare-case-it)
 [![Rio de Janeiro](https://img.shields.io/badge/Prefeitura-Rio%20de%20Janeiro-1E3A8A?style=for-the-badge)](https://prefeitura.rio/)
-[![Rocinha](https://img.shields.io/badge/Território-Rocinha-E63946?style=for-the-badge)](https://pt.wikipedia.org/wiki/Rocinha)
+[![Território](https://img.shields.io/badge/Território-Rocinha%20·%20Vidigal%20·%20São%20Conrado-E63946?style=for-the-badge)](https://pt.wikipedia.org/wiki/Rocinha)
 
 </div>
 
@@ -17,7 +17,7 @@
 ### Il lavoro degli Agenti Comunitari di Salute (ACS)
 
 * Rio ha **6.200 Agenti Comunitari di Salute (ACS)** responsabili di visitare attivamente **4,5 milioni di residenti**.
-* Queste visite avvengono soprattutto nei territori più vulnerabili della città: le *favelas*. **La zona di questa sfida è la Rocinha**, la più grande favela del Brasile (~100.000 abitanti su un versante di ~1 km²).
+* Queste visite avvengono soprattutto nei territori più vulnerabili della città: le *favelas*. **La zona di questa sfida sono la Rocinha, il Vidigal e São Conrado**, tre comunità contigue sul versante tra la Gávea e il mare. La Rocinha è la più grande favela del Brasile (~100.000 abitanti su ~1 km²).
 * Oggi la pianificazione delle visite quotidiane dipende ancora molto da:
     * la memoria degli agenti;
     * la carta;
@@ -227,12 +227,14 @@ Termini brasiliani mantenuti nella sfida, con l'equivalente o la spiegazione ita
 | **Favela** | Insediamento urbano informale, i **territori più vulnerabili** dove si concentra il lavoro degli ACS. |
 | **Área Programática (AP)** | La suddivisione territoriale della sanità di Rio, simile a un **distretto sanitario**. |
 | **Raça/cor (IBGE)** | Categoria del censimento brasiliano (Bianca, Nera, Parda…). In Italia il dato "razza/colore" **non** viene raccolto in sanità: qui è parte del contesto brasiliano. |
-
+---
 
 <div align="center">
 
-**AI Build Midweek** · Product Heroes · 22 luglio 2026
-*Adattamento italiano della sfida del Claude Impact Lab Rio 2026.
-Progetto vincitore: [Visitare](https://github.com/Visitare/visitare) — team ACS Digital.*
+**Visitare Case** · AI Build Midweek · Product Heroes · 22 luglio 2026
+
+*Adattamento italiano della sfida del [Claude Impact Lab Rio 2026](https://github.com/prefeitura-rio/claude-impact-lab-saude)
+(Anthropic · Prefeitura do Rio de Janeiro).
+Progetto vincitore dell'edizione originale: [Visitare](https://github.com/Visitare/visitare) — team ACS Digital.*
 
 </div>

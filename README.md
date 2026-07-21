@@ -19,7 +19,7 @@
 > presentazione:
 >
 > 1. **Colonne tradotte in italiano** (nell'originale erano in portoghese);
-> 2. **Nomi sintetici aggiunti** a ogni paziente (nell'originale erano anonimizzati);
+> 2. **Nomi sintetici aggiunti** a pazienti, ACS ed équipe (nell'originale erano anonimizzati o assenti);
 > 3. **Coordinate GPS riposizionate nella Favela da Rocinha**, attorno alla
 >    *Clínica da Família Maria do Socorro Silva e Souza* (`-22.9893451, -43.255015`).
 >
@@ -50,7 +50,8 @@
 | **Pazienti** | Le anagrafiche di migliaia di pazienti, con nome e condizioni cliniche | [📥 pazienti.parquet](assets/parquet/pazienti.parquet) |
 | **Eventi Clinici** | Le visite specialistiche prenotate (via *regulação*, da comunicare ai pazienti) e gli accessi in pronto soccorso o ricoveri (che indicano necessità di contatto più stretto) | [📥 eventi_clinici.parquet](assets/parquet/eventi_clinici.parquet) |
 | **Visite degli ACS** | Lo storico delle visite degli Agenti Comunitari di Salute | [📥 visite.parquet](assets/parquet/visite.parquet) |
-| **Équipe di Salute** | L'elenco delle équipe e delle unità (UBS), con la localizzazione della sede in Rocinha | [📥 equipe.parquet](assets/parquet/equipe.parquet) |
+| **Professionisti (ACS)** | L'anagrafica degli Agenti Comunitari di Salute, con nome e équipe di appartenenza | [📥 professionisti.parquet](assets/parquet/professionisti.parquet) |
+| **Équipe di Salute** | L'elenco delle équipe e delle unità (UBS), con nome dell'équipe e localizzazione della sede in Rocinha | [📥 equipe.parquet](assets/parquet/equipe.parquet) |
 
 </div>
 
@@ -123,15 +124,25 @@
 ```mermaid
 erDiagram
     equipe ||--o{ pazienti : "responsabile di"
+    equipe ||--o{ professionisti : "impiega"
+    professionisti ||--o{ visite : "effettua"
     pazienti ||--o{ visite : "riceve"
     pazienti ||--o{ eventi_clinici : "ha"
 
     equipe {
         string equipe_id PK
         string unita_id
+        string equipe_nome
         string unita_nome
         float sede_latitudine
         float sede_longitudine
+    }
+
+    professionisti {
+        string professionista_id PK
+        string nome
+        string cognome
+        string equipe_id FK
     }
 
     pazienti {
@@ -152,7 +163,7 @@ erDiagram
     }
 
     visite {
-        string professionista_id
+        string professionista_id FK
         date registrata_il
         integer ordine_visita_giorno
         string paziente_id FK
@@ -172,6 +183,7 @@ Anagrafica delle équipe di salute e delle loro sedi (UBS) in Rocinha. *(49 righ
 |---------|------|-------------|
 | `equipe_id` | string | Identificativo univoco dell'équipe (hash) |
 | `unita_id` | string | Identificativo dell'unità di salute — UBS (hash) |
+| `equipe_nome` | string | Nome dell'équipe, dalla micro-area della Rocinha che copre (es. *Equipe Valão*). Pensato per la visualizzazione nel front-end. |
 | `unita_nome` | string | Nome dell'UBS. L'unità principale è la *Clínica da Família Maria do Socorro Silva e Souza* |
 | `sede_latitudine` | float | Latitudine dell'UBS. Gli ACS partono sempre da qui. |
 | `sede_longitudine` | float | Longitudine dell'UBS. Gli ACS partono sempre da qui. |
@@ -210,10 +222,20 @@ Registro delle visite effettuate dai professionisti di salute (ACS). *(159.599 r
 
 | Colonna | Tipo | Descrizione |
 |---------|------|-------------|
-| `professionista_id` | string | Identificativo univoco del professionista/ACS (hash) |
+| `professionista_id` | string | Identificativo univoco del professionista/ACS (hash). Chiave esterna verso `professionisti.parquet` |
 | `registrata_il` | date | Data in cui la visita è stata registrata (YYYY-MM-DD) |
 | `ordine_visita_giorno` | integer | Ordine sequenziale della visita nella giornata |
 | `paziente_id` | string | Identificativo del paziente visitato (hash) |
+
+### professionisti.parquet
+Anagrafica degli Agenti Comunitari di Salute (ACS), con l'équipe di appartenenza. *(3.531 righe)*
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `professionista_id` | string | Identificativo univoco del professionista/ACS (hash) |
+| `nome` | string | Nome dell'ACS *(sintetico)* |
+| `cognome` | string | Cognome dell'ACS *(sintetico)* |
+| `equipe_id` | string | Identificativo dell'équipe di appartenenza (hash). Assegnata in base all'équipe di cui l'ACS visita più pazienti. Chiave esterna verso `equipe.parquet` |
 
 ---
 
@@ -274,8 +296,9 @@ campionamento (2.000 pazienti per équipe), *date shifting*, rumore geografico
 e soppressione dei record rari (k-anonymity <5).
 
 **Questo adattamento** aggiunge sopra: traduzione delle colonne in italiano, nomi
-sintetici deterministici per paziente, e riposizionamento di tutte le coordinate
-dentro la Rocinha (le coordinate originali erano già randomizzate, quindi il loro
+sintetici deterministici per pazienti, ACS ed équipe (queste ultime nominate dalle
+micro-aree della Rocinha), e riposizionamento di tutte le coordinate dentro la
+Rocinha (le coordinate originali erano già randomizzate, quindi il loro
 riposizionamento non altera alcun dato reale). I flag clinici, gli eventi e le
 visite restano quelli del dataset reale.
 

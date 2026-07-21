@@ -41,26 +41,6 @@
 
 ---
 
-## 📊 Accesso rapido ai dati
-
-<div align="center">
-
-| 🗂️ **Tabella** | 📝 **Descrizione** | 🔗 **File** |
-|:---------------|:-------------------|:------------|
-| **Pazienti** | Le anagrafiche di migliaia di pazienti, con nome e condizioni cliniche | [📥 pazienti.parquet](assets/parquet/pazienti.parquet) |
-| **Eventi Clinici** | Le visite specialistiche prenotate (via *regulação*, da comunicare ai pazienti) e gli accessi in pronto soccorso o ricoveri (che indicano necessità di contatto più stretto) | [📥 eventi_clinici.parquet](assets/parquet/eventi_clinici.parquet) |
-| **Visite degli ACS** | Lo storico delle visite degli Agenti Comunitari di Salute | [📥 visite.parquet](assets/parquet/visite.parquet) |
-| **Professionisti (ACS)** | L'anagrafica degli Agenti Comunitari di Salute, con nome e équipe di appartenenza | [📥 professionisti.parquet](assets/parquet/professionisti.parquet) |
-| **Équipe di Salute** | L'elenco delle équipe e delle unità (UBS), con nome dell'équipe e localizzazione della sede in Rocinha | [📥 equipe.parquet](assets/parquet/equipe.parquet) |
-
-</div>
-
-> I dati sono inclusi nella repo in formato **Parquet**, pronti per Claude Code.
-> In `assets/anteprima/` trovi un campione in CSV (prime 200 righe) di ogni
-> tabella, per dare un'occhiata veloce al contenuto.
-
----
-
 ## 🎯 La Sfida
 
 ## Intelligenza nel Territorio — Ottimizzare la pianificazione delle visite domiciliari degli Agenti Comunitari di Salute
@@ -103,6 +83,26 @@
 * Le famiglie ad alto rischio vengono raggiunte in giorni, non in settimane.
 * Agenti ed équipe cliniche restano sincronizzati in tempo reale.
 * La città inizia a registrare più famiglie visitate per turno e meno emergenze evitabili.
+
+---
+
+## 📊 Accesso rapido ai dati
+
+<div align="center">
+
+| 🗂️ **Tabella** | 📝 **Descrizione** | 🔗 **File** |
+|:---------------|:-------------------|:------------|
+| **Pazienti** | Le anagrafiche di migliaia di pazienti, con nome e condizioni cliniche | [📥 pazienti.parquet](assets/parquet/pazienti.parquet) |
+| **Eventi Clinici** | Le visite specialistiche prenotate (via *regulação*, da comunicare ai pazienti) e gli accessi in pronto soccorso o ricoveri (che indicano necessità di contatto più stretto) | [📥 eventi_clinici.parquet](assets/parquet/eventi_clinici.parquet) |
+| **Visite degli ACS** | Lo storico delle visite degli Agenti Comunitari di Salute | [📥 visite.parquet](assets/parquet/visite.parquet) |
+| **Professionisti (ACS)** | L'anagrafica degli Agenti Comunitari di Salute, con nome e équipe di appartenenza | [📥 professionisti.parquet](assets/parquet/professionisti.parquet) |
+| **Équipe di Salute** | L'elenco delle équipe e delle unità (UBS), con nome dell'équipe e localizzazione della sede in Rocinha | [📥 equipe.parquet](assets/parquet/equipe.parquet) |
+
+</div>
+
+> I dati sono inclusi nella repo in formato **Parquet**, pronti per Claude Code.
+> In `assets/anteprima/` trovi un campione in CSV (prime 200 righe) di ogni
+> tabella, per dare un'occhiata veloce al contenuto.
 
 ---
 

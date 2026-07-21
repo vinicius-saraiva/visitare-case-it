@@ -217,6 +217,27 @@ Registro delle visite effettuate dai professionisti di salute (ACS). *(159.599 r
 
 ---
 
+## 📋 Schede di rilevazione territoriale
+
+Le schede sono i **moduli che l'operatore compila a domicilio** durante la visita:
+strumenti di raccolta strutturata, adattamento italiano delle *fichas* SMS-Rio/SUBPAV.
+I file JSON descrivono la struttura di ogni scheda (sezioni, campi, tipi ed
+enumerazioni) e si trovano in [`assets/schede/`](assets/schede/).
+
+| Scheda | Destinatario | Frequenza | File |
+|:-------|:-------------|:----------|:-----|
+| **A — Anagrafica del Nucleo Familiare** | Tutti i nuclei presi in carico | Alla presa in carico, poi aggiornamento annuale | [scheda_a_anagrafica_famiglia.json](assets/schede/scheda_a_anagrafica_famiglia.json) |
+| **B — Follow-up Patologia Cronica** | Assistiti ipertesi, diabetici, BPCO/asma o anziani fragili | Mensile (quindicinale se scompensato) | [scheda_b_cronico.json](assets/schede/scheda_b_cronico.json) |
+| **B — Accompagnamento della Gravidanza** | Donne in gravidanza in carico | Mensile fino alla 32ª settimana, poi quindicinale | [scheda_b_gravidanza.json](assets/schede/scheda_b_gravidanza.json) |
+| **C — Prima Infanzia (0-6 anni)** | Bambini 0-6 anni nei nuclei in carico | Mensile nel primo anno, poi trimestrale | [scheda_c_prima_infanzia.json](assets/schede/scheda_c_prima_infanzia.json) |
+
+> I blocchi comuni a tutte le schede (intestazione, identificazione dell'assistito,
+> esito della visita) e le enumerazioni condivise sono in
+> [`_shared.json`](assets/schede/_shared.json), a cui le singole schede fanno
+> riferimento tramite `shared_ref`.
+
+---
+
 ## 🏆 Sfide bonus
 Hai finito tutto e vuoi di più?
 

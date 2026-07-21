@@ -1,0 +1,54 @@
+{
+  "$schema_version": "1.0",
+  "descrizione": "Enumerazioni e blocchi riusabili tra le 4 schede di rilevazione territoriale (adattamento italiano delle fichas SMS-Rio/SUBPAV 2022)",
+
+  "intestazione_comune": {
+    "descrizione": "Intestazione presente in TUTTE le schede (A, B Cronico, B Gravidanza, C)",
+    "campi": [
+      { "id": "asl", "label": "ASL / ATS", "tipo": "string", "obbligatorio": false, "esempio": "ATS Milano Città Metropolitana" },
+      { "id": "distretto", "label": "Distretto", "tipo": "string", "obbligatorio": false, "esempio": "Municipio 6" },
+      { "id": "casa_comunita", "label": "Casa della Comunità", "tipo": "string", "obbligatorio": true, "max_length": 120 },
+      { "id": "equipe_id", "label": "Équipe", "tipo": "string", "obbligatorio": true, "max_length": 80 },
+      { "id": "nome_professionista", "label": "Nome dell'Infermiere di Famiglia e di Comunità", "tipo": "string", "obbligatorio": true, "max_length": 120 },
+      { "id": "data_apertura_scheda", "label": "Data di apertura della scheda", "tipo": "date", "obbligatorio": true }
+    ]
+  },
+
+  "identificazione_assistito": {
+    "descrizione": "Blocco identificativo comune a tutte le schede",
+    "campi": [
+      { "id": "nome", "label": "Nome", "tipo": "string", "obbligatorio": true, "max_length": 120 },
+      { "id": "cognome", "label": "Cognome", "tipo": "string", "obbligatorio": true, "max_length": 120 },
+      { "id": "data_nascita", "label": "Data di nascita", "tipo": "date", "obbligatorio": true },
+      { "id": "codice_fiscale", "label": "Codice Fiscale", "tipo": "codice_fiscale", "obbligatorio": true },
+      { "id": "tessera_sanitaria", "label": "N° Tessera Sanitaria", "tipo": "string", "obbligatorio": false, "max_length": 20 },
+      { "id": "medico_di_base", "label": "Medico di Medicina Generale", "tipo": "string", "obbligatorio": false, "max_length": 120 },
+      { "id": "esenzione_ticket", "label": "Esenzione ticket", "tipo": "enum", "obbligatorio": false, "enum_ref": "_shared.enums.esenzione_ticket" },
+      { "id": "sesso", "label": "Sesso", "tipo": "enum", "obbligatorio": false, "enum_ref": "_shared.enums.sesso" },
+      { "id": "cittadinanza", "label": "Cittadinanza", "tipo": "string", "obbligatorio": false, "max_length": 60 },
+      { "id": "indirizzo", "label": "Indirizzo di residenza", "tipo": "string", "obbligatorio": true, "max_length": 200 },
+      { "id": "telefono", "label": "Telefono", "tipo": "string", "obbligatorio": false, "max_length": 20 },
+      { "id": "vive_solo", "label": "Vive solo/a?", "tipo": "boolean", "obbligatorio": false },
+      { "id": "caregiver_presente", "label": "Caregiver presente?", "tipo": "boolean", "obbligatorio": false }
+    ]
+  },
+
+  "esito_visita": {
+    "descrizione": "Esito registrato al termine di ogni visita domiciliare",
+    "campi": [
+      { "id": "data_visita", "label": "Data della visita", "tipo": "date", "obbligatorio": true },
+      { "id": "esito", "label": "Esito", "tipo": "enum", "obbligatorio": true, "enum_ref": "_shared.enums.esito_visita" },
+      { "id": "note", "label": "Note", "tipo": "text", "obbligatorio": false, "max_length": 500 },
+      { "id": "segnalazione_equipe", "label": "Segnalazione all'équipe / MMG?", "tipo": "boolean", "obbligatorio": false }
+    ]
+  },
+
+  "enums": {
+    "sesso": ["Femminile", "Maschile"],
+    "esenzione_ticket": ["Nessuna", "Per patologia (048, 013, ...)", "Per reddito", "Per età", "Altro"],
+    "esito_visita": ["Effettuata", "Assente", "Rifiutata", "Trasferito", "Ricoverato", "Deceduto"],
+    "aderenza_terapia": ["Regolare", "Parziale", "Non aderente", "Non valutabile"],
+    "condizione_abitativa": ["Adeguata", "Parzialmente adeguata", "Inadeguata", "Senza fissa dimora"],
+    "rete_sociale": ["Presente", "Fragile", "Assente"]
+  }
+}

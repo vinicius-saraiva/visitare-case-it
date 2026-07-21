@@ -1,0 +1,42 @@
+{
+  "scheda_id": "SCHEDA_C_PRIMA_INFANZIA",
+  "nome": "Scheda C — Prima Infanzia (0-6 anni)",
+  "versione": "1.0",
+  "anno": 2026,
+  "pubblico_destinatario": "Bambini 0-6 anni in nuclei presi in carico dall'équipe territoriale",
+  "linea_di_cura": "Prima infanzia / Percorso 0-6",
+  "frequenza_applicazione": "Mensile nel primo anno di vita, poi trimestrale.",
+  "descrizione": "Sorveglianza dello sviluppo e delle coperture vaccinali al domicilio, in raccordo con il pediatra di libera scelta. Adattamento italiano della Ficha C SMS-Rio.",
+
+  "sezioni": [
+    { "id": "intestazione", "label": "Intestazione", "ordine": 1, "shared_ref": "_shared.intestazione_comune" },
+    { "id": "identificazione", "label": "Identificazione del bambino", "ordine": 2, "shared_ref": "_shared.identificazione_assistito" },
+    {
+      "id": "dati_bambino",
+      "label": "Dati di base",
+      "ordine": 3,
+      "campi": [
+        { "id": "peso_nascita", "label": "Peso alla nascita (g)", "tipo": "integer" },
+        { "id": "nato_pretermine", "label": "Nato pretermine?", "tipo": "boolean" },
+        { "id": "pediatra", "label": "Pediatra di libera scelta", "tipo": "string" },
+        { "id": "frequenta_nido", "label": "Frequenta nido / scuola dell'infanzia?", "tipo": "boolean" }
+      ]
+    },
+    {
+      "id": "rilevazioni_per_visita",
+      "label": "Rilevazioni per visita",
+      "ordine": 4,
+      "ripetibile_per_visita": true,
+      "campi": [
+        { "id": "peso", "label": "Peso (kg)", "tipo": "decimal" },
+        { "id": "allattamento", "label": "Allattamento (solo < 12 mesi)", "tipo": "enum", "valori": ["Esclusivo", "Misto", "Artificiale", "Non applicabile"] },
+        { "id": "vaccinazioni_in_regola", "label": "Vaccinazioni in regola con il calendario?", "tipo": "boolean" },
+        { "id": "bilanci_salute_eseguiti", "label": "Bilanci di salute dal pediatra in regola?", "tipo": "boolean" },
+        { "id": "sviluppo_adeguato", "label": "Sviluppo psicomotorio adeguato all'età?", "tipo": "boolean" },
+        { "id": "ambiente_sicuro", "label": "Ambiente domestico sicuro?", "tipo": "boolean" },
+        { "id": "segnali_trascuratezza", "label": "Segnali di trascuratezza o disagio?", "tipo": "boolean" }
+      ]
+    },
+    { "id": "esito", "label": "Esito della visita", "ordine": 5, "shared_ref": "_shared.esito_visita" }
+  ]
+}

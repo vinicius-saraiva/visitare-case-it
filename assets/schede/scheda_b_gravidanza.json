@@ -1,0 +1,44 @@
+{
+  "scheda_id": "SCHEDA_B_GRAVIDANZA",
+  "nome": "Scheda B — Accompagnamento della Gravidanza",
+  "versione": "1.0",
+  "anno": 2026,
+  "pubblico_destinatario": "Donna in gravidanza presa in carico dal consultorio / équipe territoriale",
+  "linea_di_cura": "Percorso nascita",
+  "frequenza_applicazione": "Mensile fino alla 32ª settimana, poi quindicinale.",
+  "descrizione": "Accompagnamento domiciliare della gravidanza in raccordo con il consultorio familiare. Adattamento italiano della Ficha B Gestante SMS-Rio.",
+
+  "sezioni": [
+    { "id": "intestazione", "label": "Intestazione", "ordine": 1, "shared_ref": "_shared.intestazione_comune" },
+    { "id": "identificazione", "label": "Identificazione dell'assistita", "ordine": 2, "shared_ref": "_shared.identificazione_assistito" },
+    {
+      "id": "dati_gravidanza",
+      "label": "Dati della gravidanza",
+      "ordine": 3,
+      "campi": [
+        { "id": "data_ultima_mestruazione", "label": "Data ultima mestruazione", "tipo": "date" },
+        { "id": "data_presunta_parto", "label": "Data presunta del parto", "tipo": "date" },
+        { "id": "gravidanze_precedenti", "label": "Gravidanze precedenti", "tipo": "integer" },
+        { "id": "gravidanza_a_rischio", "label": "Gravidanza a rischio?", "tipo": "boolean" },
+        { "id": "consultorio_riferimento", "label": "Consultorio di riferimento", "tipo": "string" }
+      ]
+    },
+    {
+      "id": "rilevazioni_per_visita",
+      "label": "Rilevazioni per visita",
+      "ordine": 4,
+      "ripetibile_per_visita": true,
+      "campi": [
+        { "id": "settimana_gestazionale", "label": "Settimana gestazionale", "tipo": "integer" },
+        { "id": "controlli_prenatali_eseguiti", "label": "Controlli prenatali in regola?", "tipo": "boolean" },
+        { "id": "ecografie_eseguite", "label": "Ecografie di screening eseguite?", "tipo": "boolean" },
+        { "id": "assume_acido_folico", "label": "Assume acido folico / integratori?", "tipo": "boolean" },
+        { "id": "pressione_arteriosa", "label": "Pressione arteriosa (mmHg)", "tipo": "string" },
+        { "id": "sintomi_allarme", "label": "Sintomi d'allarme (sanguinamento, cefalea intensa, edemi)?", "tipo": "boolean" },
+        { "id": "fumo_alcol", "label": "Fumo o alcol?", "tipo": "boolean" },
+        { "id": "prossimo_appuntamento_comunicato", "label": "Prossimo appuntamento comunicato?", "tipo": "boolean" }
+      ]
+    },
+    { "id": "esito", "label": "Esito della visita", "ordine": 5, "shared_ref": "_shared.esito_visita" }
+  ]
+}

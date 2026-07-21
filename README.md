@@ -61,17 +61,6 @@
 
 ---
 
-## 📚 Materiali di supporto
-
-*(Documenti originali della sfida di Rio, in portoghese)*
-
-- 📖 [Manual do Agente Comunitário de Saúde (Ministério da Saúde)](http://189.28.128.100/dab/docs/publicacoes/geral/manual_acs.pdf)
-- 📗 [Guia Prático do ACS](http://189.28.128.100/dab/docs/publicacoes/geral/guia_acs.pdf)
-- 🏛️ [Repositório Principal do Município (SUBPAV)](https://bibliotecasus.subpav.org/)
-- 👥 [Cartilha do Agente Comunitário (2014)](https://subpav.org/aps/uploads/publico/repositorio/cartilha-do-agente-comunitario-2014.pdf)
-
----
-
 ## 🎯 La Sfida
 
 ## Intelligenza nel Territorio — Ottimizzare la pianificazione delle visite domiciliari degli Agenti Comunitari di Salute
@@ -236,35 +225,6 @@ Anagrafica degli Agenti Comunitari di Salute (ACS), con l'équipe di appartenenz
 | `nome` | string | Nome dell'ACS *(sintetico)* |
 | `cognome` | string | Cognome dell'ACS *(sintetico)* |
 | `equipe_id` | string | Identificativo dell'équipe di appartenenza (hash). Assegnata in base all'équipe di cui l'ACS visita più pazienti. Chiave esterna verso `equipe.parquet` |
-
----
-
-## 📋 Schede di rilevazione territoriale
-
-Le schede sono i **moduli che l'operatore compila a domicilio** durante la visita:
-strumenti di raccolta strutturata, adattamento italiano delle *fichas* SMS-Rio/SUBPAV.
-I file JSON descrivono la struttura di ogni scheda (sezioni, campi, tipi ed
-enumerazioni) e si trovano in [`assets/schede/`](assets/schede/).
-
-| Scheda | Destinatario | Frequenza | File |
-|:-------|:-------------|:----------|:-----|
-| **A — Anagrafica del Nucleo Familiare** | Tutti i nuclei presi in carico | Alla presa in carico, poi aggiornamento annuale | [scheda_a_anagrafica_famiglia.json](assets/schede/scheda_a_anagrafica_famiglia.json) |
-| **B — Follow-up Patologia Cronica** | Assistiti ipertesi, diabetici, BPCO/asma o anziani fragili | Mensile (quindicinale se scompensato) | [scheda_b_cronico.json](assets/schede/scheda_b_cronico.json) |
-| **B — Accompagnamento della Gravidanza** | Donne in gravidanza in carico | Mensile fino alla 32ª settimana, poi quindicinale | [scheda_b_gravidanza.json](assets/schede/scheda_b_gravidanza.json) |
-| **C — Prima Infanzia (0-6 anni)** | Bambini 0-6 anni nei nuclei in carico | Mensile nel primo anno, poi trimestrale | [scheda_c_prima_infanzia.json](assets/schede/scheda_c_prima_infanzia.json) |
-
-> I blocchi comuni a tutte le schede (intestazione, identificazione dell'assistito,
-> esito della visita) e le enumerazioni condivise sono in
-> [`_shared.json`](assets/schede/_shared.json), a cui le singole schede fanno
-> riferimento tramite `shared_ref`.
-
----
-
-## 🏆 Sfide bonus
-Hai finito tutto e vuoi di più?
-
-- **Per la gestione:** costruire visualizzazioni utili ai responsabili delle unità, o al gestore dell'*área programática* (il distretto sanitario di Rio).
-- **Per l'ACS:** individuare lacune di cura e miglioramenti nei follow-up che permettano risposte più rapide (o meno reattive).
 
 ---
 

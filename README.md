@@ -10,26 +10,6 @@
 
 ---
 
-> ### 🇮🇹 Nota
->
-> Questo è un **adattamento leggero** della sfida originale del Claude Impact Lab
-> Rio de Janeiro 2026 (Anthropic + Prefeitura do Rio de Janeiro). Il **contesto
-> brasiliano è mantenuto** — ACS, UBS, SUS, Rio — ma rispetto al dataset originale
-> della Prefeitura sono cambiate tre cose, per renderlo utilizzabile in questa
-> presentazione:
->
-> 1. **Colonne tradotte in italiano** (nell'originale erano in portoghese);
-> 2. **Nomi sintetici aggiunti** a pazienti, ACS ed équipe (nell'originale erano anonimizzati o assenti);
-> 3. **Coordinate GPS riposizionate nella Favela da Rocinha**, attorno alla
->    *Clínica da Família Maria do Socorro Silva e Souza* (`-22.9893451, -43.255015`).
->
-> I **dati clinici reali** (ipertensione, diabete, gravidanza, vulnerabilità,
-> eventi, visite) e le loro relazioni sono **preservati** dal dataset anonimizzato
-> reale. I termini brasiliani sono spiegati nel
-> [glossario](#-glossario-per-il-pubblico-italiano) in fondo.
-
----
-
 > ### ⚠️ **Avviso importante**
 >
 > I dati originali sono passati attraverso un rigoroso **processo di

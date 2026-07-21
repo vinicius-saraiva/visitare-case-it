@@ -180,24 +180,27 @@ Anagrafica completa dei pazienti con informazioni demografiche e cliniche. *(97.
 | `gravidanza` | boolean | Indica se la paziente è in gravidanza |
 
 ### visite.parquet
-Registro delle visite effettuate dai professionisti di salute (ACS). *(159.599 righe)*
+Registro delle visite domiciliari degli ACS, ordinate come percorso. *(159.599 righe)*
 
 | Colonna | Tipo | Descrizione |
 |---------|------|-------------|
 | `professionista_id` | string | Identificativo univoco del professionista/ACS (hash). Chiave esterna verso `professionisti.parquet` |
-| `registrata_il` | date | Data in cui la visita è stata registrata (YYYY-MM-DD) |
-| `ordine_visita_giorno` | integer | Ordine sequenziale della visita nella giornata |
+| `registrata_il` | date | Data della visita (YYYY-MM-DD). **Solo giorni feriali** |
+| `ordine_visita_giorno` | integer | Posizione della visita nel **percorso** della giornata (1 = prima). L'ordine è un vero itinerario: partenza dalla sede, poi vicino-più-vicino tenendo conto del **dislivello** |
 | `paziente_id` | string | Identificativo del paziente visitato (hash) |
 
 ### professionisti.parquet
-Anagrafica degli Agenti Comunitari di Salute (ACS), con l'équipe di appartenenza. *(3.531 righe)*
+Anagrafica degli Agenti Comunitari di Salute (ACS), con l'équipe di appartenenza. *(98 righe)*
+
+Ogni ACS lavora per **una sola équipe** e copre una porzione del suo territorio,
+con **8-12 visite al giorno** su giornate feriali.
 
 | Colonna | Tipo | Descrizione |
 |---------|------|-------------|
 | `professionista_id` | string | Identificativo univoco del professionista/ACS (hash) |
 | `nome` | string | Nome dell'ACS *(sintetico)* |
 | `cognome` | string | Cognome dell'ACS *(sintetico)* |
-| `equipe_id` | string | Identificativo dell'équipe di appartenenza (hash). Assegnata in base all'équipe di cui l'ACS visita più pazienti. Chiave esterna verso `equipe.parquet` |
+| `equipe_id` | string | Identificativo dell'équipe di appartenenza (hash). Chiave esterna verso `equipe.parquet` |
 
 ---
 
@@ -255,6 +258,35 @@ Sono costruite così:
 - **Altimetria**: `quota_m` da modello SRTM 30 m (0-285 m s.l.m.).
 
 Distribuzione della popolazione: Rocinha ~65%, Vidigal ~20%, São Conrado ~15%.
+
+### Come sono ricostruite visite, organico ed eventi
+
+Il dataset anonimizzato di partenza presentava tre artefatti che rendevano la sfida
+poco praticabile. Sono stati **ricostruiti**, e i dati che ne risultano sono
+**sintetici**:
+
+| Artefatto nell'originale | Ricostruzione |
+|:-------------------------|:--------------|
+| `ordine_visita_giorno` era stato **rinumerato** dopo il campionamento dei pazienti: le giornate risultavano di 1,99 visite (mediana 1), contro le 8-12 reali, e le rotte non erano ricostruibili | Giornate da **8-12 visite** (media 10,5), ordinate come **itinerario reale**: partenza dalla sede, vicino-più-vicino con penalità di dislivello. Visite consecutive distano in mediana **26 m** |
+| L'anagrafica conteneva **3.531 ID**, di cui 2.812 con meno di 10 giorni di attività; i 202 più attivi coprivano fino a 19 équipe, incompatibile con un ACS legato al territorio | **98 ACS**, tutti attivi (mediana 147 giornate/anno), ciascuno legato a **una sola** équipe |
+| Il *date shifting* aveva distrutto la struttura settimanale: 27% delle visite nel weekend, accessi in PS piatti | Visite **solo nei feriali**; accessi in **PS con picco nel weekend** (38,6%); appuntamenti specialistici solo nei feriali |
+
+**Perché 98 ACS.** È un vincolo aritmetico, non una scelta estetica: 159.599 visite a
+8-12 visite/giorno richiedono ~16.000 giornate-agente, cioè ~98 agenti a tempo pieno
+equivalente. Mantenere il volume di visite originale (necessario per preservare le
+lacune di cura) implica questo organico. Il rapporto che ne risulta — circa **1.000
+assistiti per ACS** — è esattamente il sotto-organico che la sfida deve affrontare.
+
+**Cosa NON è stato toccato.** Il campionamento e la ricalibrazione preservano
+esattamente le metriche che descrivono il problema da risolvere:
+
+| Indicatore | Originale | Ricostruito |
+|:-----------|----------:|------------:|
+| Pazienti mai visitati | 49,9% | **49,9%** |
+| Follow-up entro 30 gg da un accesso in PS | 23,7% | **23,9%** |
+| Promemoria entro 14 gg da un appuntamento | 30,2% | **29,3%** |
+| Visite totali | 159.599 | **159.599** |
+| Ipertensione / diabete / gravidanza | 21,5 / 8,3 / 0,7% | **21,5 / 8,3 / 0,7%** |
 
 **Cosa NON rappresenta la realtà:** indicatori assoluti, localizzazione precisa,
 popolazione totale, date esatte, nomi. **Cosa è preservato:** la sequenza temporale

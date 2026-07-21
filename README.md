@@ -73,8 +73,11 @@
 > [`assets/parquet/`](assets/parquet/) (compatto, pronto per Claude Code) e **CSV**
 > completo in [`assets/csv/`](assets/csv/) (leggibile e apribile ovunque).
 
-> **Dataset sintetico**, predisposto per questa esercitazione. Gli indicatori che se
-> ne ricavano non descrivono la situazione reale del sistema sanitario di Rio.
+> Dati derivati dal dataset anonimizzato del **Claude Impact Lab Rio 2026**
+> ([Prefeitura do Rio de Janeiro](https://github.com/prefeitura-rio/claude-impact-lab-saude)),
+> rielaborati per questa esercitazione: nomi, posizioni e visite sono sintetici.
+> **Gli indicatori che se ne ricavano non rappresentano la realtà**: illustrano
+> soltanto le dinamiche del sistema sanitario.
 
 ---
 

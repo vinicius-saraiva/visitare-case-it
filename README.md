@@ -80,9 +80,9 @@
 
 </div>
 
-> I dati sono inclusi nella repo in formato **Parquet**, pronti per Claude Code.
-> In `assets/anteprima/` trovi un campione in CSV (prime 200 righe) di ogni
-> tabella, per dare un'occhiata veloce al contenuto.
+> I dati sono inclusi nella repo in due formati: **Parquet** in
+> [`assets/parquet/`](assets/parquet/) (compatto, pronto per Claude Code) e **CSV**
+> completo in [`assets/csv/`](assets/csv/) (leggibile e apribile ovunque).
 
 ---
 

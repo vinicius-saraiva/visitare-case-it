@@ -73,6 +73,9 @@
 > [`assets/parquet/`](assets/parquet/) (compatto, pronto per Claude Code) e **CSV**
 > completo in [`assets/csv/`](assets/csv/) (leggibile e apribile ovunque).
 
+> **Dataset sintetico**, predisposto per questa esercitazione. Gli indicatori che se
+> ne ricavano non descrivono la situazione reale del sistema sanitario di Rio.
+
 ---
 
 ## 📘 Dizionario dei dati
@@ -137,15 +140,15 @@ erDiagram
 ```
 
 ### equipe.parquet
-Anagrafica delle équipe di salute e delle loro sedi (UBS) in Rocinha. *(49 righe)*
+Anagrafica delle équipe di salute e delle loro sedi (UBS). *(49 righe)*
 
 | Colonna | Tipo | Descrizione |
 |---------|------|-------------|
 | `equipe_id` | string | Identificativo univoco dell'équipe (hash) |
 | `unita_id` | string | Identificativo dell'unità di salute — UBS (hash) |
-| `equipe_nome` | string | Nome dell'équipe, dalla micro-area che copre (es. *Equipe Valão*, *Equipe Alto Vidigal*). Ogni équipe ha un **territorio proprio e contiguo**. Pensato per la visualizzazione nel front-end. |
-| `unita_nome` | string | Nome dell'unità. Le **strutture reali** presenti su OpenStreetMap sono usate con il loro nome vero (*Clínica da Família Maria do Socorro*, *Rinaldo de Lamare*, *CMS Albert Sabin*, *CMS Rodolpho Perisse*, *CMS Vila Canoas*); le restanti hanno nome sintetico |
-| `sede_latitudine` | float | Latitudine dell'unità, sulla **posizione reale** della struttura dove esiste. Gli ACS partono sempre da qui. |
+| `equipe_nome` | string | Nome dell'équipe, dalla micro-area che copre (es. *Equipe Valão*, *Equipe Alto Vidigal*). Ogni équipe ha un **territorio proprio e contiguo** |
+| `unita_nome` | string | Nome dell'unità di salute (UBS / Clínica da Família) |
+| `sede_latitudine` | float | Latitudine dell'unità. Gli ACS partono sempre da qui. |
 | `sede_longitudine` | float | Longitudine dell'unità. Gli ACS partono sempre da qui. |
 | `area` | string | Comunità servita: `Rocinha`, `Vidigal` o `São Conrado` |
 
@@ -172,9 +175,9 @@ Anagrafica completa dei pazienti con informazioni demografiche e cliniche. *(97.
 | `sesso` | string | `Femminile` / `Maschile` |
 | `razza_colore` | string | `Bianca` / `Nera` / `Parda` / `Altro` — categoria del censimento brasiliano (IBGE); *Parda* = di carnagione mista |
 | `vulnerabilita_sociale` | boolean | Indica se il paziente è in situazione di vulnerabilità sociale |
-| `latitudine` | float | Latitudine dell'abitazione *(sintetica)*, ancorata alla rete viaria reale di OpenStreetMap |
-| `longitudine` | float | Longitudine dell'abitazione *(sintetica)*, ancorata alla rete viaria reale di OpenStreetMap |
-| `quota_m` | integer | Quota altimetrica in metri s.l.m. (SRTM 30 m). Su un versante il costo di uno spostamento è il **dislivello**, non la distanza planare |
+| `latitudine` | float | Latitudine dell'abitazione del paziente |
+| `longitudine` | float | Longitudine dell'abitazione del paziente |
+| `quota_m` | integer | Quota altimetrica in metri s.l.m. Su un versante il costo di uno spostamento è il **dislivello**, non la distanza planare |
 | `iperteso` | boolean | Indica se il paziente è iperteso |
 | `diabetico` | boolean | Indica se il paziente è diabetico |
 | `gravidanza` | boolean | Indica se la paziente è in gravidanza |
@@ -222,86 +225,6 @@ Termini brasiliani mantenuti nella sfida, con l'equivalente o la spiegazione ita
 | **Área Programática (AP)** | La suddivisione territoriale della sanità di Rio, simile a un **distretto sanitario**. |
 | **Raça/cor (IBGE)** | Categoria del censimento brasiliano (Bianca, Nera, Parda…). In Italia il dato "razza/colore" **non** viene raccolto in sanità: qui è parte del contesto brasiliano. |
 
----
-
-## 🔒 Processo di anonimizzazione e adattamento
-
-I dati originali della Prefeitura sono anonimizzati con: hash crittografico (SHA256),
-campionamento (2.000 pazienti per équipe), *date shifting*, rumore geografico
-(~100m), randomizzazione degli indirizzi, generalizzazione (fasce d'età, razza/colore)
-e soppressione dei record rari (k-anonymity <5).
-
-**Questo adattamento** aggiunge sopra: traduzione delle colonne in italiano, nomi
-sintetici deterministici per pazienti, ACS ed équipe, e **rigenerazione completa
-della geografia**. I flag clinici, gli eventi e le visite restano quelli del
-dataset reale.
-
-### Come sono costruite le coordinate
-
-Le posizioni originali erano già randomizzate in anonimizzazione, quindi non
-esistono più: quelle che trovi qui sono **inventate, ma geograficamente plausibili**.
-Sono costruite così:
-
-- **Area**: le tre comunità contigue **Rocinha, Vidigal e São Conrado**, con i
-  confini amministrativi reali (OpenStreetMap, *admin_level* 10).
-- **Ancoraggio**: ogni abitazione è collocata sulla **rete viaria reale** — becos,
-  scalinate, vicoli e strade residenziali — con uno scostamento laterale di pochi
-  metri, non su una distribuzione gaussiana.
-- **Esclusioni**: nessun punto cade sul versante boscoso del **Parco della Tijuca**,
-  sul sedime dell'**Autoestrada Lagoa-Barra**, in acqua, sulle spiagge, sulla roccia
-  nuda o su impianti sportivi e aree verdi.
-- **Territori**: ogni **équipe ha una micro-area propria e contigua** (partizione
-  spaziale bilanciata). La purezza territoriale misurata è del **94%**: i vicini di
-  un paziente appartengono quasi sempre alla sua stessa équipe.
-- **Densità**: più fitta in Rocinha, intermedia in Vidigal, rada a São Conrado, e
-  decrescente con la quota (le parti alte del versante sono più rade).
-- **Altimetria**: `quota_m` da modello SRTM 30 m (0-285 m s.l.m.).
-
-Distribuzione della popolazione: Rocinha ~65%, Vidigal ~20%, São Conrado ~15%.
-
-### Come sono ricostruite visite, organico ed eventi
-
-Il dataset anonimizzato di partenza presentava tre artefatti che rendevano la sfida
-poco praticabile. Sono stati **ricostruiti**, e i dati che ne risultano sono
-**sintetici**:
-
-| Artefatto nell'originale | Ricostruzione |
-|:-------------------------|:--------------|
-| `ordine_visita_giorno` era stato **rinumerato** dopo il campionamento dei pazienti: le giornate risultavano di 1,99 visite (mediana 1), contro le 8-12 reali, e le rotte non erano ricostruibili | Giornate da **8-12 visite** (media 10,5), ordinate come **itinerario reale**: partenza dalla sede, vicino-più-vicino con penalità di dislivello. Visite consecutive distano in mediana **26 m** |
-| L'anagrafica conteneva **3.531 ID**, di cui 2.812 con meno di 10 giorni di attività; i 202 più attivi coprivano fino a 19 équipe, incompatibile con un ACS legato al territorio | **98 ACS**, tutti attivi (mediana 147 giornate/anno), ciascuno legato a **una sola** équipe |
-| Il *date shifting* aveva distrutto la struttura settimanale: 27% delle visite nel weekend, accessi in PS piatti | Visite **solo nei feriali**; accessi in **PS con picco nel weekend** (38,6%); appuntamenti specialistici solo nei feriali |
-
-**Perché 98 ACS.** È un vincolo aritmetico, non una scelta estetica: 159.599 visite a
-8-12 visite/giorno richiedono ~16.000 giornate-agente, cioè ~98 agenti a tempo pieno
-equivalente. Mantenere il volume di visite originale (necessario per preservare le
-lacune di cura) implica questo organico. Il rapporto che ne risulta — circa **1.000
-assistiti per ACS** — è esattamente il sotto-organico che la sfida deve affrontare.
-
-**Cosa NON è stato toccato.** Il campionamento e la ricalibrazione preservano
-esattamente le metriche che descrivono il problema da risolvere:
-
-| Indicatore | Originale | Ricostruito |
-|:-----------|----------:|------------:|
-| Pazienti mai visitati | 49,9% | **49,9%** |
-| Follow-up entro 30 gg da un accesso in PS | 23,7% | **23,9%** |
-| Promemoria entro 14 gg da un appuntamento | 30,2% | **29,3%** |
-| Visite totali | 159.599 | **159.599** |
-| Ipertensione / diabete / gravidanza | 21,5 / 8,3 / 0,7% | **21,5 / 8,3 / 0,7%** |
-
-**Cosa NON rappresenta la realtà:** indicatori assoluti, localizzazione precisa,
-popolazione totale, date esatte, nomi. **Cosa è preservato:** la sequenza temporale
-degli eventi, le relazioni tra tabelle, le prevalenze cliniche e i principali pattern
-di comportamento.
-
-### 📚 Riferimenti tecnici
-
-| Metodologia | Link |
-|:------------|:-----|
-| 🏥 **HIPAA Safe Harbor Method** | [Documentazione](https://www.hhs.gov/hipaa/for-professionals/privacy/special-topics/de-identification/index.html) |
-| 🔐 **Differential Privacy** | [Wikipedia](https://en.wikipedia.org/wiki/Differential_privacy) |
-| 🛡️ **K-Anonymity** | [Wikipedia](https://en.wikipedia.org/wiki/K-anonymity) |
-
----
 
 <div align="center">
 

@@ -94,6 +94,7 @@ erDiagram
         string unita_nome
         float sede_latitudine
         float sede_longitudine
+        string area
     }
 
     professionisti {
@@ -115,6 +116,7 @@ erDiagram
         boolean vulnerabilita_sociale
         float latitudine
         float longitudine
+        integer quota_m
         boolean iperteso
         boolean diabetico
         boolean gravidanza
@@ -141,10 +143,11 @@ Anagrafica delle équipe di salute e delle loro sedi (UBS) in Rocinha. *(49 righ
 |---------|------|-------------|
 | `equipe_id` | string | Identificativo univoco dell'équipe (hash) |
 | `unita_id` | string | Identificativo dell'unità di salute — UBS (hash) |
-| `equipe_nome` | string | Nome dell'équipe, dalla micro-area della Rocinha che copre (es. *Equipe Valão*). Pensato per la visualizzazione nel front-end. |
-| `unita_nome` | string | Nome dell'UBS. L'unità principale è la *Clínica da Família Maria do Socorro Silva e Souza* |
-| `sede_latitudine` | float | Latitudine dell'UBS. Gli ACS partono sempre da qui. |
-| `sede_longitudine` | float | Longitudine dell'UBS. Gli ACS partono sempre da qui. |
+| `equipe_nome` | string | Nome dell'équipe, dalla micro-area che copre (es. *Equipe Valão*, *Equipe Alto Vidigal*). Ogni équipe ha un **territorio proprio e contiguo**. Pensato per la visualizzazione nel front-end. |
+| `unita_nome` | string | Nome dell'unità. Le **strutture reali** presenti su OpenStreetMap sono usate con il loro nome vero (*Clínica da Família Maria do Socorro*, *Rinaldo de Lamare*, *CMS Albert Sabin*, *CMS Rodolpho Perisse*, *CMS Vila Canoas*); le restanti hanno nome sintetico |
+| `sede_latitudine` | float | Latitudine dell'unità, sulla **posizione reale** della struttura dove esiste. Gli ACS partono sempre da qui. |
+| `sede_longitudine` | float | Longitudine dell'unità. Gli ACS partono sempre da qui. |
+| `area` | string | Comunità servita: `Rocinha`, `Vidigal` o `São Conrado` |
 
 ### eventi_clinici.parquet
 Registro degli eventi clinici dei pazienti. *(100.503 righe)*
@@ -169,8 +172,9 @@ Anagrafica completa dei pazienti con informazioni demografiche e cliniche. *(97.
 | `sesso` | string | `Femminile` / `Maschile` |
 | `razza_colore` | string | `Bianca` / `Nera` / `Parda` / `Altro` — categoria del censimento brasiliano (IBGE); *Parda* = di carnagione mista |
 | `vulnerabilita_sociale` | boolean | Indica se il paziente è in situazione di vulnerabilità sociale |
-| `latitudine` | float | Latitudine dell'indirizzo del paziente (in Rocinha) |
-| `longitudine` | float | Longitudine dell'indirizzo del paziente (in Rocinha) |
+| `latitudine` | float | Latitudine dell'abitazione *(sintetica)*, ancorata alla rete viaria reale di OpenStreetMap |
+| `longitudine` | float | Longitudine dell'abitazione *(sintetica)*, ancorata alla rete viaria reale di OpenStreetMap |
+| `quota_m` | integer | Quota altimetrica in metri s.l.m. (SRTM 30 m). Su un versante il costo di uno spostamento è il **dislivello**, non la distanza planare |
 | `iperteso` | boolean | Indica se il paziente è iperteso |
 | `diabetico` | boolean | Indica se il paziente è diabetico |
 | `gravidanza` | boolean | Indica se la paziente è in gravidanza |
@@ -225,11 +229,32 @@ campionamento (2.000 pazienti per équipe), *date shifting*, rumore geografico
 e soppressione dei record rari (k-anonymity <5).
 
 **Questo adattamento** aggiunge sopra: traduzione delle colonne in italiano, nomi
-sintetici deterministici per pazienti, ACS ed équipe (queste ultime nominate dalle
-micro-aree della Rocinha), e riposizionamento di tutte le coordinate dentro la
-Rocinha (le coordinate originali erano già randomizzate, quindi il loro
-riposizionamento non altera alcun dato reale). I flag clinici, gli eventi e le
-visite restano quelli del dataset reale.
+sintetici deterministici per pazienti, ACS ed équipe, e **rigenerazione completa
+della geografia**. I flag clinici, gli eventi e le visite restano quelli del
+dataset reale.
+
+### Come sono costruite le coordinate
+
+Le posizioni originali erano già randomizzate in anonimizzazione, quindi non
+esistono più: quelle che trovi qui sono **inventate, ma geograficamente plausibili**.
+Sono costruite così:
+
+- **Area**: le tre comunità contigue **Rocinha, Vidigal e São Conrado**, con i
+  confini amministrativi reali (OpenStreetMap, *admin_level* 10).
+- **Ancoraggio**: ogni abitazione è collocata sulla **rete viaria reale** — becos,
+  scalinate, vicoli e strade residenziali — con uno scostamento laterale di pochi
+  metri, non su una distribuzione gaussiana.
+- **Esclusioni**: nessun punto cade sul versante boscoso del **Parco della Tijuca**,
+  sul sedime dell'**Autoestrada Lagoa-Barra**, in acqua, sulle spiagge, sulla roccia
+  nuda o su impianti sportivi e aree verdi.
+- **Territori**: ogni **équipe ha una micro-area propria e contigua** (partizione
+  spaziale bilanciata). La purezza territoriale misurata è del **94%**: i vicini di
+  un paziente appartengono quasi sempre alla sua stessa équipe.
+- **Densità**: più fitta in Rocinha, intermedia in Vidigal, rada a São Conrado, e
+  decrescente con la quota (le parti alte del versante sono più rade).
+- **Altimetria**: `quota_m` da modello SRTM 30 m (0-285 m s.l.m.).
+
+Distribuzione della popolazione: Rocinha ~65%, Vidigal ~20%, São Conrado ~15%.
 
 **Cosa NON rappresenta la realtà:** indicatori assoluti, localizzazione precisa,
 popolazione totale, date esatte, nomi. **Cosa è preservato:** la sequenza temporale

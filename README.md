@@ -10,17 +10,6 @@
 
 ---
 
-> ### ⚠️ **Avviso importante**
->
-> I dati originali sono passati attraverso un rigoroso **processo di
-> anonimizzazione** (randomizzazione, generalizzazione, soppressione), e questo
-> adattamento aggiunge nomi sintetici e riposiziona le coordinate.
->
-> **Gli indicatori generati a partire dai dati NON rappresentano la realtà.**
-> I dati illustrano soltanto le dinamiche del sistema sanitario.
-
----
-
 ## 🎯 La Sfida
 
 ## Intelligenza nel Territorio — Ottimizzare la pianificazione delle visite domiciliari degli Agenti Comunitari di Salute

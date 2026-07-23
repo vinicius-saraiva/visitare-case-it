@@ -1,0 +1,240 @@
+<div align="center">
+
+# 🏥 Visitare Case | Dataset Salute di Rio
+
+[![Visitare Case](https://img.shields.io/badge/Visitare-Case-5436DA?style=for-the-badge)](https://github.com/vinicius-saraiva/visitare-case-it)
+[![Rio de Janeiro](https://img.shields.io/badge/Prefeitura-Rio%20de%20Janeiro-1E3A8A?style=for-the-badge)](https://prefeitura.rio/)
+[![Território](https://img.shields.io/badge/Território-Rocinha%20·%20Vidigal%20·%20São%20Conrado-E63946?style=for-the-badge)](https://pt.wikipedia.org/wiki/Rocinha)
+
+</div>
+
+---
+
+## 🎯 La Sfida
+
+## Intelligenza nel Territorio — Ottimizzare la pianificazione delle visite domiciliari degli Agenti Comunitari di Salute
+
+### Il lavoro degli Agenti Comunitari di Salute (ACS)
+
+* Rio ha **6.200 Agenti Comunitari di Salute (ACS)** responsabili di visitare attivamente **4,5 milioni di residenti**.
+* Queste visite avvengono soprattutto nei territori più vulnerabili della città: le *favelas*. **La zona di questa sfida sono la Rocinha, il Vidigal e São Conrado**, tre comunità contigue sul versante tra la Gávea e il mare. La Rocinha è la più grande favela del Brasile (~100.000 abitanti su ~1 km²).
+* Oggi la pianificazione delle visite quotidiane dipende ancora molto da:
+    * la memoria degli agenti;
+    * la carta;
+    * la conoscenza informale del territorio.
+* Allo stesso tempo, dati clinici e sociali rilevanti restano dispersi e poco utilizzati nei sistemi delle cure primarie.
+* La sfida è trasformare questi dati in una risposta pratica e unica ogni mattina:
+    * chi visitare;
+    * in quale ordine;
+    * per quale motivo;
+    * sulla base del rischio reale e delle lacune di cura.
+
+### Cosa succede se lo risolviamo
+
+* La presenza quotidiana nel territorio diventa più mirata.
+* La cura diventa più preventiva e meno reattiva.
+* Le famiglie ad alto rischio vengono raggiunte più rapidamente.
+* Le condizioni rilevabili possono essere identificate prima.
+* Emergenze e ricoveri evitabili tendono a diminuire.
+
+### Chi beneficia della soluzione
+
+* Direttamente:
+    * i **6.200 ACS**, con una giornata di lavoro più chiara, sicura e prioritizzata;
+    * i **residenti** seguiti, che vengono visti prima e con maggiore frequenza quando serve.
+* Indirettamente:
+    * le équipe delle cliniche, che ricevono casi meglio prioritizzati;
+    * il sistema sanitario municipale, che può ridurre le emergenze evitabili.
+
+### Com'è fatto il successo
+
+* Ogni ACS inizia la giornata con una lista affidabile di visite basata sul rischio.
+* Le famiglie ad alto rischio vengono raggiunte in giorni, non in settimane.
+* Agenti ed équipe cliniche restano sincronizzati in tempo reale.
+* La città inizia a registrare più famiglie visitate per turno e meno emergenze evitabili.
+
+---
+
+## 📊 Accesso rapido ai dati
+
+<div align="center">
+
+| 🗂️ **Tabella** | 📝 **Descrizione** | 🔗 **File** |
+|:---------------|:-------------------|:------------|
+| **Pazienti** | Le anagrafiche di migliaia di pazienti, con nome e condizioni cliniche | [📥 pazienti.parquet](assets/parquet/pazienti.parquet) |
+| **Eventi Clinici** | Le visite specialistiche prenotate (via *regulação*, da comunicare ai pazienti) e gli accessi in pronto soccorso o ricoveri (che indicano necessità di contatto più stretto) | [📥 eventi_clinici.parquet](assets/parquet/eventi_clinici.parquet) |
+| **Visite degli ACS** | Lo storico delle visite degli Agenti Comunitari di Salute | [📥 visite.parquet](assets/parquet/visite.parquet) |
+| **Professionisti (ACS)** | L'anagrafica degli Agenti Comunitari di Salute, con nome e équipe di appartenenza | [📥 professionisti.parquet](assets/parquet/professionisti.parquet) |
+| **Équipe di Salute** | L'elenco delle équipe e delle unità (UBS), con nome dell'équipe e localizzazione della sede in Rocinha | [📥 equipe.parquet](assets/parquet/equipe.parquet) |
+
+</div>
+
+> I dati sono inclusi nella repo in due formati: **Parquet** in
+> [`assets/parquet/`](assets/parquet/) (compatto, pronto per Claude Code) e **CSV**
+> completo in [`assets/csv/`](assets/csv/) (leggibile e apribile ovunque).
+
+> Dati derivati dal dataset anonimizzato del **Claude Impact Lab Rio 2026**
+> ([Prefeitura do Rio de Janeiro](https://github.com/prefeitura-rio/claude-impact-lab-saude)),
+> rielaborati per questa esercitazione: nomi, posizioni e visite sono sintetici.
+> **Gli indicatori che se ne ricavano non rappresentano la realtà**: illustrano
+> soltanto le dinamiche del sistema sanitario.
+
+---
+
+## 📘 Dizionario dei dati
+
+### Modello dei dati
+
+```mermaid
+erDiagram
+    equipe ||--o{ pazienti : "responsabile di"
+    equipe ||--o{ professionisti : "impiega"
+    professionisti ||--o{ visite : "effettua"
+    pazienti ||--o{ visite : "riceve"
+    pazienti ||--o{ eventi_clinici : "ha"
+
+    equipe {
+        string equipe_id PK
+        string unita_id
+        string equipe_nome
+        string unita_nome
+        float sede_latitudine
+        float sede_longitudine
+        string area
+    }
+
+    professionisti {
+        string professionista_id PK
+        string nome
+        string cognome
+        string equipe_id FK
+    }
+
+    pazienti {
+        string paziente_id PK
+        string equipe_id FK
+        string unita_id
+        string nome
+        string cognome
+        string fascia_eta
+        string sesso
+        string razza_colore
+        boolean vulnerabilita_sociale
+        float latitudine
+        float longitudine
+        integer quota_m
+        boolean iperteso
+        boolean diabetico
+        boolean gravidanza
+    }
+
+    visite {
+        string professionista_id FK
+        date registrata_il
+        integer ordine_visita_giorno
+        string paziente_id FK
+    }
+
+    eventi_clinici {
+        string paziente_id FK
+        string tipo
+        date data_riferimento
+    }
+```
+
+### equipe.parquet
+Anagrafica delle équipe di salute e delle loro sedi (UBS). *(49 righe)*
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `equipe_id` | string | Identificativo univoco dell'équipe (hash) |
+| `unita_id` | string | Identificativo dell'unità di salute — UBS (hash) |
+| `equipe_nome` | string | Nome dell'équipe, dalla micro-area che copre (es. *Equipe Valão*, *Equipe Alto Vidigal*). Ogni équipe ha un **territorio proprio e contiguo** |
+| `unita_nome` | string | Nome dell'unità di salute (UBS / Clínica da Família) |
+| `sede_latitudine` | float | Latitudine dell'unità. Gli ACS partono sempre da qui. |
+| `sede_longitudine` | float | Longitudine dell'unità. Gli ACS partono sempre da qui. |
+| `area` | string | Comunità servita: `Rocinha`, `Vidigal` o `São Conrado` |
+
+### eventi_clinici.parquet
+Registro degli eventi clinici dei pazienti. *(100.503 righe)*
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `paziente_id` | string | Identificativo univoco del paziente (hash) |
+| `tipo` | string | `visita-specialistica-prenotata` = appuntamento da comunicare al paziente; `accesso-ps-o-ricovero` = accesso in urgenza/emergenza o ricovero |
+| `data_riferimento` | date | Data di riferimento dell'evento (YYYY-MM-DD) |
+
+### pazienti.parquet
+Anagrafica completa dei pazienti con informazioni demografiche e cliniche. *(97.938 righe)*
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `paziente_id` | string | Identificativo univoco del paziente (hash) |
+| `equipe_id` | string | Identificativo dell'équipe responsabile (hash) |
+| `unita_id` | string | Identificativo dell'unità di salute — UBS (hash) |
+| `nome` | string | Nome del paziente *(sintetico)* |
+| `cognome` | string | Cognome del paziente *(sintetico)* |
+| `fascia_eta` | string | Fascia d'età (`0-6`, `6-18`, `19-45`, `45-65`, `66+`) |
+| `sesso` | string | `Femminile` / `Maschile` |
+| `razza_colore` | string | `Bianca` / `Nera` / `Parda` / `Altro` — categoria del censimento brasiliano (IBGE); *Parda* = di carnagione mista |
+| `vulnerabilita_sociale` | boolean | Indica se il paziente è in situazione di vulnerabilità sociale |
+| `latitudine` | float | Latitudine dell'abitazione del paziente |
+| `longitudine` | float | Longitudine dell'abitazione del paziente |
+| `quota_m` | integer | Quota altimetrica in metri s.l.m. Su un versante il costo di uno spostamento è il **dislivello**, non la distanza planare |
+| `iperteso` | boolean | Indica se il paziente è iperteso |
+| `diabetico` | boolean | Indica se il paziente è diabetico |
+| `gravidanza` | boolean | Indica se la paziente è in gravidanza |
+
+### visite.parquet
+Registro delle visite domiciliari degli ACS, ordinate come percorso. *(159.599 righe)*
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `professionista_id` | string | Identificativo univoco del professionista/ACS (hash). Chiave esterna verso `professionisti.parquet` |
+| `registrata_il` | date | Data della visita (YYYY-MM-DD). **Solo giorni feriali** |
+| `ordine_visita_giorno` | integer | Posizione della visita nel **percorso** della giornata (1 = prima). L'ordine è un vero itinerario: partenza dalla sede, poi vicino-più-vicino tenendo conto del **dislivello** |
+| `paziente_id` | string | Identificativo del paziente visitato (hash) |
+
+### professionisti.parquet
+Anagrafica degli Agenti Comunitari di Salute (ACS), con l'équipe di appartenenza. *(98 righe)*
+
+Ogni ACS lavora per **una sola équipe** e copre una porzione del suo territorio,
+con **8-12 visite al giorno** su giornate feriali.
+
+| Colonna | Tipo | Descrizione |
+|---------|------|-------------|
+| `professionista_id` | string | Identificativo univoco del professionista/ACS (hash) |
+| `nome` | string | Nome dell'ACS *(sintetico)* |
+| `cognome` | string | Cognome dell'ACS *(sintetico)* |
+| `equipe_id` | string | Identificativo dell'équipe di appartenenza (hash). Chiave esterna verso `equipe.parquet` |
+
+---
+
+## 🇧🇷 Glossario per il pubblico italiano
+
+Termini brasiliani mantenuti nella sfida, con l'equivalente o la spiegazione italiana:
+
+| Termine (BR) | Cosa significa |
+|--------------|----------------|
+| **ACS** — Agente Comunitário de Saúde | Operatore sanitario di comunità, **assunto dal quartiere in cui vive**. Non è un infermiere: è il ponte tra la clinica e le famiglie del territorio. Non esiste una figura identica in Italia (la più vicina è l'Infermiere di Famiglia e di Comunità, ma con formazione clinica). |
+| **Rocinha** | La più grande *favela* del Brasile, sul versante tra São Conrado e Gávea a Rio. ~100.000 abitanti. La zona di questa sfida. |
+| **Clínica da Família Maria do Socorro** | L'UBS (unità di cure primarie) reale che ancora la nostra mappa. Da qui partono le équipe ogni mattina. |
+| **SUS** — Sistema Único de Saúde | Il servizio sanitario pubblico e universale brasiliano — l'equivalente del nostro **SSN**. |
+| **UBS** — Unidade Básica de Saúde / **Clínica da Família** | La struttura delle cure primarie sul territorio, dove ha sede l'équipe. Equivale grosso modo alla **Casa della Comunità**. |
+| **Atenção Primária** | Cure primarie / assistenza territoriale. |
+| **Regulação** | Il sistema pubblico che assegna e prenota le visite specialistiche. Gli appuntamenti "via regulação" sono quelli che l'ACS deve **comunicare** al paziente. |
+| **SMS-Rio / SUBPAV** | La Secretaria Municipal de Saúde di Rio e la sua sottosegreteria per le cure primarie — l'amministrazione che ha fornito i dati. |
+| **Favela** | Insediamento urbano informale, i **territori più vulnerabili** dove si concentra il lavoro degli ACS. |
+| **Área Programática (AP)** | La suddivisione territoriale della sanità di Rio, simile a un **distretto sanitario**. |
+| **Raça/cor (IBGE)** | Categoria del censimento brasiliano (Bianca, Nera, Parda…). In Italia il dato "razza/colore" **non** viene raccolto in sanità: qui è parte del contesto brasiliano. |
+---
+
+<div align="center">
+
+**Visitare Case** · AI Build Midweek · Product Heroes · 22 luglio 2026
+
+*Adattamento italiano della sfida del [Claude Impact Lab Rio 2026](https://github.com/prefeitura-rio/claude-impact-lab-saude)
+(Anthropic · Prefeitura do Rio de Janeiro).
+Progetto vincitore dell'edizione originale: [Visitare](https://github.com/Visitare/visitare) — team ACS Digital.*
+
+</div>
